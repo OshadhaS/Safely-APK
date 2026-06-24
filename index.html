@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="si">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,33 +15,42 @@
             height: 100vh;
             margin: 0;
             text-align: center;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
-
         .container {
             background-color: #1e1e1e;
             padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             max-width: 400px;
             width: 100%;
         }
-
         h1 {
             color: #4CAF50;
             font-size: 28px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
-
+        .blink-text {
+            font-size: 14px;
+            color: #ffb300;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: bold;
+            animation: blinker 1.2s linear infinite;
+        }
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
         p {
             color: #aaaaaa;
             margin-bottom: 25px;
         }
-
-        /* PIN section styling */
         .pin-section {
             margin-bottom: 20px;
         }
-
         .pin-input {
             background-color: #2a2a2a;
             border: 2px solid #444444;
@@ -55,11 +63,9 @@
             outline: none;
             transition: border-color 0.3s;
         }
-
         .pin-input:focus {
             border-color: #4CAF50;
         }
-
         .verify-btn {
             background-color: #333333;
             color: white;
@@ -72,12 +78,9 @@
             margin-left: 5px;
             transition: background 0.3s;
         }
-
         .verify-btn:hover {
             background-color: #444444;
         }
-
-        /* Download Button (Initially Hidden) */
         .btn {
             display: none;
             background-color: #4CAF50;
@@ -91,19 +94,15 @@
             box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
             margin-top: 15px;
         }
-
         .btn:hover {
             background-color: #45a049;
         }
-
-        /* Error & Warning Alert styling */
         .error-msg {
             display: none;
             color: #f44336;
             font-size: 14px;
             margin-top: 10px;
         }
-
         .device-warning {
             display: none;
             margin-top: 20px;
@@ -116,59 +115,43 @@
             font-weight: 500;
             line-height: 1.5;
         }
-
-        .blink-text {
-            font-size: 14px;
-            color: #ffb300;
-            margin-bottom: 15px;
-            font-weight: bold;
-            animation: blinker 1.5s linear infinite;
-        }
-
-        @keyframes blinker {
-            50% {
-                opacity: 0;
-            }
-        }
     </style>
 </head>
-
-<body>
+<body oncontextmenu="return false;">
 
     <div class="container">
         <h1>Safely App</h1>
-        <p>Enter the PIN number provided to you to download the app.</p>
-        <p class="blink-text">It's right where you got this link.</p>
-
+        <h6 class="blink-text">It's right where you got this link.</h6>
+        <p>ඇප් එක බාගත කරගැනීමට ඔබට ලබාදුන් PIN අංකය ඇතුළත් කරන්න.</p>
+        
         <div class="pin-section" id="pinArea">
-            <input type="password" id="pinInput" class="pin-input" placeholder="Enter PIN Code" maxlength="6" autofocus
-                onkeydown="checkEnter(event)">
+            <input type="password" id="pinInput" class="pin-input" placeholder="Enter PIN Code" maxlength="6" autofocus onkeydown="checkEnter(event)">
             <button onclick="checkPin()" class="verify-btn">Verify</button>
-            <div id="errorMsg" class="error-msg">❌ Incorrect PIN! Try again.</div>
+            <div id="errorMsg" class="error-msg">❌ වැරදි PIN අංකයක්! නැවත උත්සාහ කරන්න.</div>
         </div>
 
-        <a href="https://drive.google.com/file/d/1nQEaYXDg7HebPxD4khFsCRxNm6g6YlIo/view?usp=sharing" class="btn"
-            id="downloadBtn" target="_blank">Download APK</a>
-
+        <a href="ඔයාගේ_GOOGLE_DRIVE_LINK_එක_මෙතනට_දාන්න" class="btn" id="downloadBtn" target="_blank">Download APK</a>
+        
         <div id="warningMessage" class="device-warning">
-            ⚠️ <span id="detectedDevice">You are using a non-Android device.</span> Please use an Android device to
-            download and install the app.
+            ⚠️ <span id="detectedDevice">You are using a non-Android device.</span> Please use an Android device to download and install the app.
         </div>
     </div>
 
     <script>
-        var CORRECT_PIN = "2026";
+        // 🔐 "2026" කියන PIN එක Base64 වලින් හැංගුවාම එන කේතය (Inspect කරන එකාට පේන්නේ මේක විතරයි)
+        var ENCRYPTED_PIN = "MjAyNg=="; 
 
         function checkPin() {
-            var input = document.getElementById("pinInput").value;
+            var input = document.getElementById("pinInput").value.trim();
             var error = document.getElementById("errorMsg");
             var downloadBtn = document.getElementById("downloadBtn");
             var pinArea = document.getElementById("pinArea");
 
-            if (input === CORRECT_PIN) {
+            // බ්‍රවුසර් එකෙන්ම auto decrypt කරලා චෙක් කරනවා (btoa කියන්නේ බ්‍රවුසර් එකේම තියෙන එකක්)
+            if (btoa(input) === ENCRYPTED_PIN) {
                 error.style.display = "none";
-                pinArea.style.display = "none";
-                downloadBtn.style.display = "inline-block";
+                pinArea.style.display = "none"; 
+                downloadBtn.style.display = "inline-block"; 
             } else {
                 error.style.display = "block";
                 document.getElementById("pinInput").focus();
@@ -181,7 +164,18 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
+        // Keyboard shortcuts block කිරීම
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123) { return false; } 
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; }
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; } 
+            if (e.metaKey && e.altKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
+        };
+
+        // Device detect කිරීම
+        document.addEventListener("DOMContentLoaded", function() {
             var userAgent = navigator.userAgent || navigator.vendor || window.opera;
             var isAndroid = /android/i.test(userAgent);
 
@@ -197,11 +191,9 @@
                 document.getElementById("detectedDevice").innerText = "You are using " + deviceName + ".";
                 document.getElementById("warningMessage").style.display = "block";
             }
-
             document.getElementById("pinInput").focus();
         });
     </script>
 
 </body>
-
 </html>
