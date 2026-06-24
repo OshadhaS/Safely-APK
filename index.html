@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="si">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,19 +21,23 @@
             -ms-user-select: none;
             user-select: none;
         }
+
         .container {
             background-color: #1e1e1e;
             padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             max-width: 400px;
             width: 100%;
+            box-sizing: border-box;
         }
+
         h1 {
             color: #4CAF50;
             font-size: 28px;
             margin-bottom: 5px;
         }
+
         .blink-text {
             font-size: 14px;
             color: #ffb300;
@@ -41,16 +46,22 @@
             font-weight: bold;
             animation: blinker 1.2s linear infinite;
         }
+
         @keyframes blinker {
-            50% { opacity: 0; }
+            50% {
+                opacity: 0;
+            }
         }
+
         p {
             color: #aaaaaa;
             margin-bottom: 25px;
         }
+
         .pin-section {
             margin-bottom: 20px;
         }
+
         .pin-input {
             background-color: #2a2a2a;
             border: 2px solid #444444;
@@ -63,9 +74,11 @@
             outline: none;
             transition: border-color 0.3s;
         }
+
         .pin-input:focus {
             border-color: #4CAF50;
         }
+
         .verify-btn {
             background-color: #333333;
             color: white;
@@ -78,9 +91,27 @@
             margin-left: 5px;
             transition: background 0.3s;
         }
+
         .verify-btn:hover {
             background-color: #444444;
         }
+
+        /* ⏳ මැද කොටස් සුමටව අයින් කරන්න හදපු CSS */
+        .fade-out-content {
+            max-height: 200px;
+            opacity: 1;
+            transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
+            overflow: hidden;
+        }
+
+        .fade-out-content.hide {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 🚀 Download Button Animation (Fade-in & Slide-up) */
         .btn {
             display: none;
             background-color: #4CAF50;
@@ -92,17 +123,36 @@
             border-radius: 8px;
             transition: background 0.3s;
             box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-            margin-top: 15px;
+            margin: 20px auto;
         }
+
+        .btn.show {
+            display: inline-block;
+            animation: slideUpFadeIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes slideUpFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px); /* යට ඉඳන් උඩට එන්න */
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .btn:hover {
             background-color: #45a049;
         }
+
         .error-msg {
             display: none;
             color: #f44336;
             font-size: 14px;
             margin-top: 10px;
         }
+
         .device-warning {
             display: none;
             margin-top: 20px;
@@ -117,41 +167,51 @@
         }
     </style>
 </head>
+
 <body oncontextmenu="return false;">
 
     <div class="container">
         <h1>Safely App</h1>
-        <h6 class="blink-text">It's right where you got this link.</h6>
-        <p>ඇප් එක බාගත කරගැනීමට ඔබට ලබාදුන් PIN අංකය ඇතුළත් කරන්න.</p>
         
-        <div class="pin-section" id="pinArea">
-            <input type="password" id="pinInput" class="pin-input" placeholder="Enter PIN Code" maxlength="6" autofocus onkeydown="checkEnter(event)">
-            <button onclick="checkPin()" class="verify-btn">Verify</button>
-            <div id="errorMsg" class="error-msg">❌ වැරදි PIN අංකයක්! නැවත උත්සාහ කරන්න.</div>
+        <div id="middleContent" class="fade-out-content">
+            <div id="textInstructions">
+                <p>Enter the PIN number provided to you to download the app.</p>
+                <h6 class="blink-text">It's right where you got this link.</h6>
+            </div>
+
+            <div class="pin-section" id="pinArea">
+                <input type="password" id="pinInput" class="pin-input" placeholder="Enter PIN Code" maxlength="6" autofocus
+                    onkeydown="checkEnter(event)">
+                <button onclick="checkPin()" class="verify-btn">Verify</button>
+                <div id="errorMsg" class="error-msg">❌ Incorrect PIN! Try again.</div>
+            </div>
         </div>
 
-        <a href="ඔයාගේ_GOOGLE_DRIVE_LINK_එක_මෙතනට_දාන්න" class="btn" id="downloadBtn" target="_blank">Download APK</a>
-        
+        <a href="https://drive.google.com/file/d/1nQEaYXDg7HebPxD4khFsCRxNm6g6YlIo/view?usp=drive_link" class="btn" id="downloadBtn" target="_blank">Download APK</a>
+
         <div id="warningMessage" class="device-warning">
-            ⚠️ <span id="detectedDevice">You are using a non-Android device.</span> Please use an Android device to download and install the app.
+            ⚠️ <span id="detectedDevice">You are using a non-Android device.</span> Please use an Android device to
+            download and install the app.
         </div>
     </div>
 
     <script>
-        // 🔐 "2026" කියන PIN එක Base64 වලින් හැංගුවාම එන කේතය (Inspect කරන එකාට පේන්නේ මේක විතරයි)
-        var ENCRYPTED_PIN = "MjAyNg=="; 
+        var ENCRYPTED_PIN = "MjAyNg==";
 
         function checkPin() {
             var input = document.getElementById("pinInput").value.trim();
             var error = document.getElementById("errorMsg");
             var downloadBtn = document.getElementById("downloadBtn");
-            var pinArea = document.getElementById("pinArea");
+            var middleContent = document.getElementById("middleContent");
 
-            // බ්‍රවුසර් එකෙන්ම auto decrypt කරලා චෙක් කරනවා (btoa කියන්නේ බ්‍රවුසර් එකේම තියෙන එකක්)
             if (btoa(input) === ENCRYPTED_PIN) {
                 error.style.display = "none";
-                pinArea.style.display = "none"; 
-                downloadBtn.style.display = "inline-block"; 
+                
+                // ✨ මැද කෑලි ටික ලස්සනට කුඩාවෙලා නැතිවෙන්න 'hide' class එක දානවා
+                middleContent.classList.add("hide");
+                
+                // 🚀 බටන් එක ඇනිමේෂන් එකත් එක්ක පාවෙලා එන්න 'show' class එක දානවා
+                downloadBtn.classList.add("show");
             } else {
                 error.style.display = "block";
                 document.getElementById("pinInput").focus();
@@ -164,18 +224,18 @@
             }
         }
 
-        // Keyboard shortcuts block කිරීම
-        document.onkeydown = function(e) {
-            if (e.keyCode == 123) { return false; } 
+        // Keyboard shortcuts block 
+        document.onkeydown = function (e) {
+            if (e.keyCode == 123) { return false; }
             if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
             if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; }
             if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
-            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; } 
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; }
             if (e.metaKey && e.altKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
         };
 
-        // Device detect කිරීම
-        document.addEventListener("DOMContentLoaded", function() {
+        // Device detect
+        document.addEventListener("DOMContentLoaded", function () {
             var userAgent = navigator.userAgent || navigator.vendor || window.opera;
             var isAndroid = /android/i.test(userAgent);
 
@@ -196,4 +256,5 @@
     </script>
 
 </body>
+
 </html>
