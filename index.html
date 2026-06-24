@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="si">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Safely App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #1e1e1e;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #4CAF50;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #aaaaaa;
+            margin-bottom: 25px;
+        }
+
+        /* PIN section styling */
+        .pin-section {
+            margin-bottom: 20px;
+        }
+
+        .pin-input {
+            background-color: #2a2a2a;
+            border: 2px solid #444444;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            width: 60%;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .pin-input:focus {
+            border-color: #4CAF50;
+        }
+
+        .verify-btn {
+            background-color: #333333;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 5px;
+            transition: background 0.3s;
+        }
+
+        .verify-btn:hover {
+            background-color: #444444;
+        }
+
+        /* Download Button (Initially Hidden) */
+        .btn {
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Error & Warning Alert styling */
+        .error-msg {
+            display: none;
+            color: #f44336;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .device-warning {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(244, 67, 54, 0.1);
+            border: 1px solid #f44336;
+            color: #f44336;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .blink-text {
+            font-size: 14px;
+            color: #ffb300;
+            margin-bottom: 15px;
+            font-weight: bold;
+            animation: blinker 1.5s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Safely App</h1>
+        <p>Enter the PIN number provided to you to download the app.</p>
+        <p class="blink-text">It's right where you got this link.</p>
+
+        <div class="pin-section" id="pinArea">
+            <input type="password" id="pinInput" class="pin-input" placeholder="Enter PIN Code" maxlength="6" autofocus
+                onkeydown="checkEnter(event)">
+            <button onclick="checkPin()" class="verify-btn">Verify</button>
+            <div id="errorMsg" class="error-msg">❌ Incorrect PIN! Try again.</div>
+        </div>
+
+        <a href="https://drive.google.com/file/d/1nQEaYXDg7HebPxD4khFsCRxNm6g6YlIo/view?usp=sharing" class="btn"
+            id="downloadBtn" target="_blank">Download APK</a>
+
+        <div id="warningMessage" class="device-warning">
+            ⚠️ <span id="detectedDevice">You are using a non-Android device.</span> Please use an Android device to
+            download and install the app.
+        </div>
+    </div>
+
+    <script>
+        var CORRECT_PIN = "2026";
+
+        function checkPin() {
+            var input = document.getElementById("pinInput").value;
+            var error = document.getElementById("errorMsg");
+            var downloadBtn = document.getElementById("downloadBtn");
+            var pinArea = document.getElementById("pinArea");
+
+            if (input === CORRECT_PIN) {
+                error.style.display = "none";
+                pinArea.style.display = "none";
+                downloadBtn.style.display = "inline-block";
+            } else {
+                error.style.display = "block";
+                document.getElementById("pinInput").focus();
+            }
+        }
+
+        function checkEnter(event) {
+            if (event.key === "Enter" || event.keyCode === 13) {
+                checkPin();
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            var isAndroid = /android/i.test(userAgent);
+
+            if (!isAndroid) {
+                var deviceName = "a non-Android device";
+                if (/iPhone|iPad|iPod/i.test(userAgent)) {
+                    deviceName = "an iPhone / iPad";
+                } else if (/Macintosh|MacIntel|MacPPC|Mac68K/i.test(userAgent)) {
+                    deviceName = "a Mac";
+                } else if (/Windows NT/i.test(userAgent)) {
+                    deviceName = "a Windows PC";
+                }
+                document.getElementById("detectedDevice").innerText = "You are using " + deviceName + ".";
+                document.getElementById("warningMessage").style.display = "block";
+            }
+
+            document.getElementById("pinInput").focus();
+        });
+    </script>
+
+</body>
+
+</html>
